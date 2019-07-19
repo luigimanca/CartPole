@@ -1,0 +1,1814 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+*************************************************
+	         AnyLogic Project File 
+*************************************************	         
+-->
+<AnyLogicWorkspace WorkspaceVersion="1.9" AnyLogicVersion="8.4.0.201903191539" AlpVersion="8.4.6">
+<Model>
+	<Id>1544090942405</Id>
+	<Name><![CDATA[CartPoleModel]]></Name>
+	<EngineVersion>6</EngineVersion>
+	<JavaPackageName><![CDATA[cartpolemodel]]></JavaPackageName>
+	<ModelTimeUnit><![CDATA[Second]]></ModelTimeUnit>
+	<ActiveObjectClasses>
+		<!--   =========   Active Object Class   ========  -->
+		<ActiveObjectClass>
+			<Id>1544090942410</Id>
+			<Name><![CDATA[Main]]></Name>
+			<AdditionalClassCode><![CDATA[public final double xThreshold = 2.4;
+public final double thetaThreshold = 12 * 2 * PI / 360;
+public final int MaxStep = 200;
+public final double Gravity = 9.8;
+public final double Force_Mag = 10;
+public final double Tau = 0.02;
+public final double Displacement_Coef = 500;
+public final double rotationCoef = 1.5;
+public final double Mass_Pole = 0.1;
+public final double Pole_Length = 0.5;
+public final double Pole_Mass_Length = Mass_Pole * Pole_Length;
+public final double Mass_Cart = 1;
+public final double Total_Mass = Mass_Cart + Mass_Pole;
+public final double randLim = 0.05;
+public Random rand = new Random();
+
+public double x = -randLim + (randLim - (-randLim)) * rand.nextDouble();
+public double xDot =-randLim + (randLim - (-randLim)) * rand.nextDouble();
+public double theta = -randLim + (randLim - (-randLim)) * rand.nextDouble();
+public double thetaDot = -randLim + (randLim - (-randLim)) * rand.nextDouble();
+
+public double force;
+public double cosTheta;
+public double sinTheta;
+public double temp;
+public double xAcc;
+public double thetaAcc;
+]]></AdditionalClassCode>
+			<ClientAreaTopLeft><X>0</X><Y>0</Y></ClientAreaTopLeft>
+			<Import><![CDATA[import lombok.Synchronized;]]></Import>
+			<Generic>false</Generic>
+			<GenericParameter>
+				<Id>1544090942409</Id>
+				<Name><![CDATA[1544090942409]]></Name>
+				<GenericParameterValue Class="CodeValue">
+					<Code><![CDATA[T extends Agent]]></Code>
+				</GenericParameterValue>
+				<GenericParameterLabel><![CDATA[Generic parameter:]]></GenericParameterLabel>
+			</GenericParameter>
+			<FlowChartsUsage>ENTITY</FlowChartsUsage>
+			<SamplesToKeep>100</SamplesToKeep>
+			<LimitNumberOfArrayElements>false</LimitNumberOfArrayElements>
+			<ElementsLimitValue>100</ElementsLimitValue>
+			<MakeDefaultViewArea>true</MakeDefaultViewArea>
+			<SceneGridColor/>
+			<SceneBackgroundColor/>
+			<SceneSkybox>null</SceneSkybox>
+			<AgentProperties>
+	 			<SpaceType>CONTINUOUS</SpaceType>			
+				<EnvironmentDefinesInitialLocation>true</EnvironmentDefinesInitialLocation>
+				<RotateAnimationTowardsMovement>true</RotateAnimationTowardsMovement>
+				<RotateAnimationVertically>false</RotateAnimationVertically>
+				<VelocityCode Class="CodeUnitValue">
+					<Code><![CDATA[10]]></Code>
+					<Unit Class="SpeedUnits"><![CDATA[MPS]]></Unit>
+				</VelocityCode>
+				<PhysicalLength Class="CodeUnitValue">
+					<Code><![CDATA[1]]></Code>
+					<Unit Class="LengthUnits"><![CDATA[METER]]></Unit>
+				</PhysicalLength>
+				<PhysicalWidth Class="CodeUnitValue">
+					<Code><![CDATA[1]]></Code>
+					<Unit Class="LengthUnits"><![CDATA[METER]]></Unit>
+				</PhysicalWidth>
+				<PhysicalHeight Class="CodeUnitValue">
+					<Code><![CDATA[1]]></Code>
+					<Unit Class="LengthUnits"><![CDATA[METER]]></Unit>
+				</PhysicalHeight>
+			</AgentProperties>
+			<EnvironmentProperties>
+					<EnableSteps>false</EnableSteps>
+					<StepDurationCode Class="CodeUnitValue">
+						<Code><![CDATA[1.0]]></Code>
+						<Unit Class="TimeUnits"><![CDATA[SECOND]]></Unit>
+					</StepDurationCode>
+					<SpaceType>CONTINUOUS</SpaceType>
+					<WidthCode><![CDATA[500]]></WidthCode>
+					<HeightCode><![CDATA[500]]></HeightCode>
+					<ZHeightCode><![CDATA[0]]></ZHeightCode>
+					<ColumnsCountCode><![CDATA[100]]></ColumnsCountCode>
+					<RowsCountCode><![CDATA[100]]></RowsCountCode>
+					<NeigborhoodType>MOORE</NeigborhoodType>
+					<LayoutType>USER_DEF</LayoutType>
+					<LayoutTypeApplyOnStartup>true</LayoutTypeApplyOnStartup>
+					<NetworkType>USER_DEF</NetworkType>
+					<NetworkTypeApplyOnStartup>true</NetworkTypeApplyOnStartup>
+					<ConnectionsPerAgentCode><![CDATA[2]]></ConnectionsPerAgentCode>
+					<ConnectionsRangeCode><![CDATA[50]]></ConnectionsRangeCode>
+					<NeighborLinkFractionCode><![CDATA[0.95]]></NeighborLinkFractionCode>
+					<MCode><![CDATA[10]]></MCode>
+			</EnvironmentProperties>
+			<DatasetsCreationProperties>
+				<AutoCreate>true</AutoCreate>
+					<OccurrenceAtTime>true</OccurrenceAtTime>
+					<OccurrenceDate>1544169600000</OccurrenceDate>
+					<OccurrenceTime Class="CodeUnitValue">
+						<Code><![CDATA[0]]></Code>
+						<Unit Class="TimeUnits"><![CDATA[SECOND]]></Unit>
+					</OccurrenceTime>
+					<RecurrenceCode Class="CodeUnitValue">
+						<Code><![CDATA[1]]></Code>
+						<Unit Class="TimeUnits"><![CDATA[SECOND]]></Unit>
+					</RecurrenceCode>
+			</DatasetsCreationProperties>
+			<ScaleRuler>
+				<Id>1544090942407</Id>
+				<Name><![CDATA[scale]]></Name>
+				<X>0</X><Y>-150</Y>
+				<PublicFlag>false</PublicFlag>
+				<PresentationFlag>false</PresentationFlag>
+				<ShowLabel>false</ShowLabel>
+				<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
+				<Length>100</Length>
+				<Rotation>0</Rotation>
+				<ScaleType>BASED_ON_LENGTH</ScaleType>
+				<ModelLength>1</ModelLength>
+				<LengthUnits>METER</LengthUnits>
+				<Scale>10</Scale>
+				<InheritedFromParentAgentType>true</InheritedFromParentAgentType>
+			</ScaleRuler>
+			<ConnectionsId>1544090942406</ConnectionsId>
+			<Variables>
+				<Variable Class="PlainVariable">
+					<Id>1544435073214</Id>
+					<Name><![CDATA[v_physicalStep]]></Name>
+					<X>-160</X><Y>240</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
+						<Type><![CDATA[ObservationEnc]]></Type>        
+					</Properties>
+				</Variable>
+				<Variable Class="PlainVariable">
+					<Id>1544435074264</Id>
+					<Name><![CDATA[v_action]]></Name>
+					<X>-160</X><Y>270</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
+						<Type><![CDATA[int]]></Type>        
+					</Properties>
+				</Variable>
+				<Variable Class="Parameter">
+					<Id>1544095283639</Id>
+					<Name><![CDATA[p_experiment]]></Name>
+					<X>300</X><Y>-60</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" ModificatorType="STATIC">
+						<Type><![CDATA[SimulationMDP]]></Type>
+						<UnitType><![CDATA[NONE]]></UnitType>
+						<SdArray>false</SdArray>
+						<ParameterEditor>
+							<Id>1544095283637</Id>
+							<EditorContolType>TEXT_BOX</EditorContolType>
+							<MinSliderValue><![CDATA[0]]></MinSliderValue>
+							<MaxSliderValue><![CDATA[100]]></MaxSliderValue>
+							<DelimeterType>NO_DELIMETER</DelimeterType>
+						</ParameterEditor>
+					</Properties>                 
+				</Variable>
+			</Variables>
+			<DynamicEvents>
+				<DynamicEventClass>
+					<Id>1544095333143</Id>
+					<Name><![CDATA[e_myDynamicEvent]]></Name>
+					<X>-160</X><Y>140</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Action><![CDATA[//traceln("event FIRED");
+v_physicalStep = f_physicalStep(v_action);
+getEngine().pause();
+
+synchronized (p_experiment){
+	p_experiment.notify();
+}]]></Action>
+				</DynamicEventClass>
+			</DynamicEvents>
+			<Functions>
+				<Function AccessType="default" StaticFunction="false">
+					<ReturnModificator>RETURNS_VALUE</ReturnModificator>
+					<ReturnType><![CDATA[ObservationEnc]]></ReturnType>
+					<Id>1544095363671</Id>
+					<Name><![CDATA[f_physicalStep]]></Name>
+					<X>-160</X><Y>200</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Parameter>
+						<Name><![CDATA[action]]></Name>
+						<Type><![CDATA[Object]]></Type>
+					</Parameter>
+					<Body><![CDATA[/*
+	The variables and constants in this function are introduced in the Additional Class Code section of Main
+*/
+
+int action1 = (Integer) action;
+if (action1 == 1){
+	force = Force_Mag;
+	cart.cone0.setVisible(true);
+	cart.cone1.setVisible(false);
+}else if(action1 == 0){
+	force = -1 * Force_Mag;
+	cart.cone0.setVisible(false);
+	cart.cone1.setVisible(true);
+}else{
+	traceln("!!!The action value in the physicalStep function is not handeled correctely!!!");
+}
+
+//traceln("Based on the chosen action, we apply a force equal to " + force);
+
+cosTheta = cos(theta);
+sinTheta = sin(theta);
+temp = (force + Pole_Mass_Length * thetaDot * thetaDot * sinTheta) / Total_Mass;
+thetaAcc = (Gravity * sinTheta - cosTheta * temp) /
+	(Pole_Length * (4.0 / 3.0 - Mass_Pole * cosTheta * cosTheta / Total_Mass));
+xAcc = temp - Pole_Mass_Length * thetaAcc * cosTheta / Total_Mass;
+
+x += Tau * xDot;
+xDot += Tau * xAcc;
+theta += Tau * thetaDot;
+thetaDot += Tau * thetaAcc;
+
+ObservationEnc output = new ObservationEnc(x, xDot, theta, thetaDot);
+return output;]]></Body>
+				</Function>
+			</Functions>
+			<AgentLinks>
+				<AgentLink>
+					<Id>1544090942406</Id>
+					<Name><![CDATA[connections]]></Name>
+					<X>50</X><Y>-50</Y>
+					<Label><X>15</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<HandleReceiveInConnections>false</HandleReceiveInConnections>
+					<AgentLinkType>COLLECTION_OF_LINKS</AgentLinkType>
+					<AgentLinkBidirectional>true</AgentLinkBidirectional>
+					<MessageType><![CDATA[Object]]></MessageType>
+					<LineStyle>SOLID</LineStyle>
+					<LineWidth>1</LineWidth>
+					<LineColor>-16777216</LineColor>
+					<LineZOrder>UNDER_AGENTS</LineZOrder>
+					<LineArrow>NONE</LineArrow>
+					<LineArrowPosition>END</LineArrowPosition>
+				</AgentLink>
+			</AgentLinks>
+
+			<EmbeddedObjects>
+				<EmbeddedObject>
+					<Id>1544095212070</Id>
+					<Name><![CDATA[cart]]></Name>
+					<X>-160</X><Y>80</Y>
+					<Label><X>-15</X><Y>-30</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<PresentationId>1544095212637</PresentationId>
+					<ActiveObjectClass>
+						<PackageName><![CDATA[cartpolemodel]]></PackageName>
+						<ClassName><![CDATA[Cart]]></ClassName>
+					</ActiveObjectClass>
+					<GenericParameterSubstitute>
+						<GenericParameterSubstituteReference>
+							<PackageName><![CDATA[cartpolemodel]]></PackageName>
+							<ClassName><![CDATA[Cart]]></ClassName>
+							<ItemName><![CDATA[1544093488973]]></ItemName>
+						</GenericParameterSubstituteReference>
+					</GenericParameterSubstitute>
+					<Parameters>
+					</Parameters>
+					<ReplicationFlag>false</ReplicationFlag>
+					<Replication Class="CodeValue">
+						<Code><![CDATA[100]]></Code>
+					</Replication>
+					<CollectionType>ARRAY_LIST_BASED</CollectionType>
+					<InEnvironment>true</InEnvironment>	
+					<InitialLocationType>AT_ANIMATION_POSITION</InitialLocationType>
+					<XCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</XCode>
+					<YCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</YCode>
+					<ZCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</ZCode>
+					<ColumnCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</ColumnCode>
+					<RowCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</RowCode>
+					<LatitudeCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</LatitudeCode>
+					<LongitudeCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</LongitudeCode>
+					<LocationNameCode Class="CodeValue">
+						<Code><![CDATA[""]]></Code>
+					</LocationNameCode>
+					<InitializationType>SPECIFIED_NUMBER</InitializationType>
+					<InitializationDatabaseTableQuery>
+						<TableReference>
+						</TableReference>
+					</InitializationDatabaseTableQuery>
+					<InitializationDatabaseType>ONE_AGENT_PER_DATABASE_RECORD</InitializationDatabaseType>
+					<QuantityColumn>
+					</QuantityColumn>
+				</EmbeddedObject>
+			</EmbeddedObjects>
+
+			<Shapes>
+				<EmbeddedObjectPresentation>
+					<Id>1544095212637</Id>
+					<Name><![CDATA[cart_presentation]]></Name>
+					<X>0</X><Y>-170</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<Rotation>0.0</Rotation>
+					<DrawingMode>AGENT_CURRENT_POSITION</DrawingMode>
+					<ScaleType>AUTOMATICALLY_CALCULATED</ScaleType>
+					<GISScaleForRealEmbeddedObjectPresentationSize>1000</GISScaleForRealEmbeddedObjectPresentationSize>
+					<GISScaleForFixedEmbeddedObjectPresentationSize>1000000000</GISScaleForFixedEmbeddedObjectPresentationSize>
+					<Latitude>0.0</Latitude>
+					<Longitude>0.0</Longitude>
+				</EmbeddedObjectPresentation>
+				<Rectangle>
+					<Id>1544095245159</Id>
+					<Name><![CDATA[rectangle]]></Name>
+					<X>0</X><Y>210</Y>
+					<Label><X>10</X><Y>10</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<ZHeight>10</ZHeight>
+					<LineWidth>1</LineWidth>
+					<LineColor>-16777216</LineColor>
+					<LineMaterial>null</LineMaterial>
+					<LineStyle>SOLID</LineStyle>
+					<Width>1000</Width>
+					<Height>20</Height>
+					<Rotation>0.0</Rotation>
+					<FillColor>-16777216</FillColor>
+					<FillMaterial>null</FillMaterial>
+				</Rectangle>
+			</Shapes>
+
+		</ActiveObjectClass>
+		<!--   =========   Active Object Class   ========  -->
+		<ActiveObjectClass>
+			<Id>1544093262608</Id>
+			<Name><![CDATA[Pole]]></Name>
+			<ClientAreaTopLeft><X>0</X><Y>0</Y></ClientAreaTopLeft>
+			<Generic>false</Generic>
+			<GenericParameter>
+				<Id>1544093262607</Id>
+				<Name><![CDATA[1544093262607]]></Name>
+				<GenericParameterValue Class="CodeValue">
+					<Code><![CDATA[T extends Agent]]></Code>
+				</GenericParameterValue>
+				<GenericParameterLabel><![CDATA[Generic parameter:]]></GenericParameterLabel>
+			</GenericParameter>
+			<FlowChartsUsage>ENTITY</FlowChartsUsage>
+			<SamplesToKeep>100</SamplesToKeep>
+			<LimitNumberOfArrayElements>false</LimitNumberOfArrayElements>
+			<ElementsLimitValue>100</ElementsLimitValue>
+			<MakeDefaultViewArea>true</MakeDefaultViewArea>
+			<SceneGridColor/>
+			<SceneBackgroundColor/>
+			<SceneSkybox>null</SceneSkybox>
+			<AgentProperties>
+	 			<SpaceType>CONTINUOUS</SpaceType>			
+				<EnvironmentDefinesInitialLocation>true</EnvironmentDefinesInitialLocation>
+				<RotateAnimationTowardsMovement>true</RotateAnimationTowardsMovement>
+				<RotateAnimationVertically>false</RotateAnimationVertically>
+				<VelocityCode Class="CodeUnitValue">
+					<Code><![CDATA[10]]></Code>
+					<Unit Class="SpeedUnits"><![CDATA[MPS]]></Unit>
+				</VelocityCode>
+				<PhysicalLength Class="CodeUnitValue">
+					<Code><![CDATA[1]]></Code>
+					<Unit Class="LengthUnits"><![CDATA[METER]]></Unit>
+				</PhysicalLength>
+				<PhysicalWidth Class="CodeUnitValue">
+					<Code><![CDATA[1]]></Code>
+					<Unit Class="LengthUnits"><![CDATA[METER]]></Unit>
+				</PhysicalWidth>
+				<PhysicalHeight Class="CodeUnitValue">
+					<Code><![CDATA[1]]></Code>
+					<Unit Class="LengthUnits"><![CDATA[METER]]></Unit>
+				</PhysicalHeight>
+			</AgentProperties>
+			<EnvironmentProperties>
+					<EnableSteps>false</EnableSteps>
+					<StepDurationCode Class="CodeUnitValue">
+						<Code><![CDATA[1.0]]></Code>
+						<Unit Class="TimeUnits"><![CDATA[SECOND]]></Unit>
+					</StepDurationCode>
+					<SpaceType>CONTINUOUS</SpaceType>
+					<WidthCode><![CDATA[500]]></WidthCode>
+					<HeightCode><![CDATA[500]]></HeightCode>
+					<ZHeightCode><![CDATA[0]]></ZHeightCode>
+					<ColumnsCountCode><![CDATA[100]]></ColumnsCountCode>
+					<RowsCountCode><![CDATA[100]]></RowsCountCode>
+					<NeigborhoodType>MOORE</NeigborhoodType>
+					<LayoutType>USER_DEF</LayoutType>
+					<LayoutTypeApplyOnStartup>true</LayoutTypeApplyOnStartup>
+					<NetworkType>USER_DEF</NetworkType>
+					<NetworkTypeApplyOnStartup>true</NetworkTypeApplyOnStartup>
+					<ConnectionsPerAgentCode><![CDATA[2]]></ConnectionsPerAgentCode>
+					<ConnectionsRangeCode><![CDATA[50]]></ConnectionsRangeCode>
+					<NeighborLinkFractionCode><![CDATA[0.95]]></NeighborLinkFractionCode>
+					<MCode><![CDATA[10]]></MCode>
+			</EnvironmentProperties>
+			<DatasetsCreationProperties>
+				<AutoCreate>true</AutoCreate>
+					<OccurrenceAtTime>true</OccurrenceAtTime>
+					<OccurrenceDate>1544169600000</OccurrenceDate>
+					<OccurrenceTime Class="CodeUnitValue">
+						<Code><![CDATA[0]]></Code>
+						<Unit Class="TimeUnits"><![CDATA[SECOND]]></Unit>
+					</OccurrenceTime>
+					<RecurrenceCode Class="CodeUnitValue">
+						<Code><![CDATA[1]]></Code>
+						<Unit Class="TimeUnits"><![CDATA[SECOND]]></Unit>
+					</RecurrenceCode>
+			</DatasetsCreationProperties>
+			<ScaleRuler>
+				<Id>1544093262605</Id>
+				<Name><![CDATA[scale]]></Name>
+				<X>0</X><Y>-150</Y>
+				<PublicFlag>false</PublicFlag>
+				<PresentationFlag>false</PresentationFlag>
+				<ShowLabel>false</ShowLabel>
+				<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
+				<Length>100</Length>
+				<Rotation>0</Rotation>
+				<ScaleType>BASED_ON_LENGTH</ScaleType>
+				<ModelLength>1</ModelLength>
+				<LengthUnits>METER</LengthUnits>
+				<Scale>10</Scale>
+				<InheritedFromParentAgentType>true</InheritedFromParentAgentType>
+			</ScaleRuler>
+			<ConnectionsId>1544093262604</ConnectionsId>
+			<AgentLinks>
+				<AgentLink>
+					<Id>1544093262604</Id>
+					<Name><![CDATA[connections]]></Name>
+					<X>50</X><Y>-50</Y>
+					<Label><X>15</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<HandleReceiveInConnections>false</HandleReceiveInConnections>
+					<AgentLinkType>COLLECTION_OF_LINKS</AgentLinkType>
+					<AgentLinkBidirectional>true</AgentLinkBidirectional>
+					<MessageType><![CDATA[Object]]></MessageType>
+					<LineStyle>SOLID</LineStyle>
+					<LineWidth>1</LineWidth>
+					<LineColor>-16777216</LineColor>
+					<LineZOrder>UNDER_AGENTS</LineZOrder>
+					<LineArrow>NONE</LineArrow>
+					<LineArrowPosition>END</LineArrowPosition>
+				</AgentLink>
+			</AgentLinks>
+
+			<ContainerLinks>
+				<ContainerLink>
+					<Id>1544093506619</Id>
+					<Name><![CDATA[cart]]></Name>
+					<X>50</X><Y>-100</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<ActiveObjectClass>
+						<PackageName><![CDATA[cartpolemodel]]></PackageName>
+						<ClassName><![CDATA[Cart]]></ClassName>
+					</ActiveObjectClass>
+				</ContainerLink>
+				<ContainerLink>
+					<Id>1544095212654</Id>
+					<Name><![CDATA[main]]></Name>
+					<X>150</X><Y>-100</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<ActiveObjectClass>
+						<PackageName><![CDATA[cartpolemodel]]></PackageName>
+						<ClassName><![CDATA[Main]]></ClassName>
+					</ActiveObjectClass>
+				</ContainerLink>
+			</ContainerLinks>
+
+			<Shapes>
+				<Line>
+					<Id>1544093344304</Id>
+					<Name><![CDATA[line]]></Name>
+					<X>0</X><Y>0</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<ZHeight>10</ZHeight>
+					<LineWidth>8</LineWidth>
+					<LineColor>-16777216</LineColor>
+					<LineColorCode><![CDATA[main.theta<0? 
+	new Color((int) main.theta*100000, 0, 0): new Color(0, 0, (int) main.theta*100000)]]></LineColorCode>
+					<LineMaterial>null</LineMaterial>
+					<LineStyle>SOLID</LineStyle>
+					<BeginArrowSize>1</BeginArrowSize>
+					<BeginArrowStyle>0</BeginArrowStyle>
+					<EndArrowSize>1</EndArrowSize>
+					<EndArrowStyle>0</EndArrowStyle>
+					<RotationCode><![CDATA[main.theta * main.rotationCoef]]></RotationCode>
+					<Dx>0</Dx>
+					<Dy>-100</Dy>
+					<Dz>0</Dz>
+				</Line>
+			</Shapes>
+
+		</ActiveObjectClass>
+		<!--   =========   Active Object Class   ========  -->
+		<ActiveObjectClass>
+			<Id>1544093488974</Id>
+			<Name><![CDATA[Cart]]></Name>
+			<ClientAreaTopLeft><X>0</X><Y>0</Y></ClientAreaTopLeft>
+			<Generic>false</Generic>
+			<GenericParameter>
+				<Id>1544093488973</Id>
+				<Name><![CDATA[1544093488973]]></Name>
+				<GenericParameterValue Class="CodeValue">
+					<Code><![CDATA[T extends Agent]]></Code>
+				</GenericParameterValue>
+				<GenericParameterLabel><![CDATA[Generic parameter:]]></GenericParameterLabel>
+			</GenericParameter>
+			<FlowChartsUsage>ENTITY</FlowChartsUsage>
+			<SamplesToKeep>100</SamplesToKeep>
+			<LimitNumberOfArrayElements>false</LimitNumberOfArrayElements>
+			<ElementsLimitValue>100</ElementsLimitValue>
+			<MakeDefaultViewArea>true</MakeDefaultViewArea>
+			<SceneGridColor/>
+			<SceneBackgroundColor/>
+			<SceneSkybox>null</SceneSkybox>
+			<AgentProperties>
+	 			<SpaceType>CONTINUOUS</SpaceType>			
+				<EnvironmentDefinesInitialLocation>true</EnvironmentDefinesInitialLocation>
+				<RotateAnimationTowardsMovement>true</RotateAnimationTowardsMovement>
+				<RotateAnimationVertically>false</RotateAnimationVertically>
+				<VelocityCode Class="CodeUnitValue">
+					<Code><![CDATA[10]]></Code>
+					<Unit Class="SpeedUnits"><![CDATA[MPS]]></Unit>
+				</VelocityCode>
+				<PhysicalLength Class="CodeUnitValue">
+					<Code><![CDATA[1]]></Code>
+					<Unit Class="LengthUnits"><![CDATA[METER]]></Unit>
+				</PhysicalLength>
+				<PhysicalWidth Class="CodeUnitValue">
+					<Code><![CDATA[1]]></Code>
+					<Unit Class="LengthUnits"><![CDATA[METER]]></Unit>
+				</PhysicalWidth>
+				<PhysicalHeight Class="CodeUnitValue">
+					<Code><![CDATA[1]]></Code>
+					<Unit Class="LengthUnits"><![CDATA[METER]]></Unit>
+				</PhysicalHeight>
+			</AgentProperties>
+			<EnvironmentProperties>
+					<EnableSteps>false</EnableSteps>
+					<StepDurationCode Class="CodeUnitValue">
+						<Code><![CDATA[1.0]]></Code>
+						<Unit Class="TimeUnits"><![CDATA[SECOND]]></Unit>
+					</StepDurationCode>
+					<SpaceType>CONTINUOUS</SpaceType>
+					<WidthCode><![CDATA[500]]></WidthCode>
+					<HeightCode><![CDATA[500]]></HeightCode>
+					<ZHeightCode><![CDATA[0]]></ZHeightCode>
+					<ColumnsCountCode><![CDATA[100]]></ColumnsCountCode>
+					<RowsCountCode><![CDATA[100]]></RowsCountCode>
+					<NeigborhoodType>MOORE</NeigborhoodType>
+					<LayoutType>USER_DEF</LayoutType>
+					<LayoutTypeApplyOnStartup>true</LayoutTypeApplyOnStartup>
+					<NetworkType>USER_DEF</NetworkType>
+					<NetworkTypeApplyOnStartup>true</NetworkTypeApplyOnStartup>
+					<ConnectionsPerAgentCode><![CDATA[2]]></ConnectionsPerAgentCode>
+					<ConnectionsRangeCode><![CDATA[50]]></ConnectionsRangeCode>
+					<NeighborLinkFractionCode><![CDATA[0.95]]></NeighborLinkFractionCode>
+					<MCode><![CDATA[10]]></MCode>
+			</EnvironmentProperties>
+			<DatasetsCreationProperties>
+				<AutoCreate>true</AutoCreate>
+					<OccurrenceAtTime>true</OccurrenceAtTime>
+					<OccurrenceDate>1544169600000</OccurrenceDate>
+					<OccurrenceTime Class="CodeUnitValue">
+						<Code><![CDATA[0]]></Code>
+						<Unit Class="TimeUnits"><![CDATA[SECOND]]></Unit>
+					</OccurrenceTime>
+					<RecurrenceCode Class="CodeUnitValue">
+						<Code><![CDATA[1]]></Code>
+						<Unit Class="TimeUnits"><![CDATA[SECOND]]></Unit>
+					</RecurrenceCode>
+			</DatasetsCreationProperties>
+			<ScaleRuler>
+				<Id>1544093488971</Id>
+				<Name><![CDATA[scale]]></Name>
+				<X>0</X><Y>-150</Y>
+				<PublicFlag>false</PublicFlag>
+				<PresentationFlag>false</PresentationFlag>
+				<ShowLabel>false</ShowLabel>
+				<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
+				<Length>100</Length>
+				<Rotation>0</Rotation>
+				<ScaleType>BASED_ON_LENGTH</ScaleType>
+				<ModelLength>1</ModelLength>
+				<LengthUnits>METER</LengthUnits>
+				<Scale>10</Scale>
+				<InheritedFromParentAgentType>true</InheritedFromParentAgentType>
+			</ScaleRuler>
+			<ConnectionsId>1544093488970</ConnectionsId>
+			<AgentLinks>
+				<AgentLink>
+					<Id>1544093488970</Id>
+					<Name><![CDATA[connections]]></Name>
+					<X>40</X><Y>-100</Y>
+					<Label><X>15</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<HandleReceiveInConnections>false</HandleReceiveInConnections>
+					<AgentLinkType>COLLECTION_OF_LINKS</AgentLinkType>
+					<AgentLinkBidirectional>true</AgentLinkBidirectional>
+					<MessageType><![CDATA[Object]]></MessageType>
+					<LineStyle>SOLID</LineStyle>
+					<LineWidth>1</LineWidth>
+					<LineColor>-16777216</LineColor>
+					<LineZOrder>UNDER_AGENTS</LineZOrder>
+					<LineArrow>NONE</LineArrow>
+					<LineArrowPosition>END</LineArrowPosition>
+				</AgentLink>
+			</AgentLinks>
+
+			<ContainerLinks>
+				<ContainerLink>
+					<Id>1544095212653</Id>
+					<Name><![CDATA[main]]></Name>
+					<X>50</X><Y>-150</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<ActiveObjectClass>
+						<PackageName><![CDATA[cartpolemodel]]></PackageName>
+						<ClassName><![CDATA[Main]]></ClassName>
+					</ActiveObjectClass>
+				</ContainerLink>
+			</ContainerLinks>
+			<EmbeddedObjects>
+				<EmbeddedObject>
+					<Id>1544093505403</Id>
+					<Name><![CDATA[pole]]></Name>
+					<X>-70</X><Y>50</Y>
+					<Label><X>-15</X><Y>-30</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<PresentationId>1544093506604</PresentationId>
+					<ActiveObjectClass>
+						<PackageName><![CDATA[cartpolemodel]]></PackageName>
+						<ClassName><![CDATA[Pole]]></ClassName>
+					</ActiveObjectClass>
+					<GenericParameterSubstitute>
+						<GenericParameterSubstituteReference>
+							<PackageName><![CDATA[cartpolemodel]]></PackageName>
+							<ClassName><![CDATA[Pole]]></ClassName>
+							<ItemName><![CDATA[1544093262607]]></ItemName>
+						</GenericParameterSubstituteReference>
+					</GenericParameterSubstitute>
+					<Parameters>
+					</Parameters>
+					<ReplicationFlag>false</ReplicationFlag>
+					<Replication Class="CodeValue">
+						<Code><![CDATA[100]]></Code>
+					</Replication>
+					<CollectionType>ARRAY_LIST_BASED</CollectionType>
+					<InEnvironment>true</InEnvironment>	
+					<InitialLocationType>AT_ANIMATION_POSITION</InitialLocationType>
+					<XCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</XCode>
+					<YCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</YCode>
+					<ZCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</ZCode>
+					<ColumnCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</ColumnCode>
+					<RowCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</RowCode>
+					<LatitudeCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</LatitudeCode>
+					<LongitudeCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</LongitudeCode>
+					<LocationNameCode Class="CodeValue">
+						<Code><![CDATA[""]]></Code>
+					</LocationNameCode>
+					<InitializationType>SPECIFIED_NUMBER</InitializationType>
+					<InitializationDatabaseTableQuery>
+						<TableReference>
+						</TableReference>
+					</InitializationDatabaseTableQuery>
+					<InitializationDatabaseType>ONE_AGENT_PER_DATABASE_RECORD</InitializationDatabaseType>
+					<QuantityColumn>
+					</QuantityColumn>
+				</EmbeddedObject>
+			</EmbeddedObjects>
+
+			<Shapes>
+				<Group>
+					<Id>1544093816337</Id>
+					<Name><![CDATA[group]]></Name>
+					<X>380</X><Y>320</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
+					<XCode><![CDATA[490+main.Displacement_Coef*main.x]]></XCode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<Rotation>0.0</Rotation>
+
+			<Shapes>
+				<EmbeddedObjectPresentation>
+					<Id>1544093506604</Id>
+					<Name><![CDATA[pole_presentation]]></Name>
+					<X>0</X><Y>50</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<Rotation>0.0</Rotation>
+					<DrawingMode>AGENT_CURRENT_POSITION</DrawingMode>
+					<ScaleType>AUTOMATICALLY_CALCULATED</ScaleType>
+					<GISScaleForRealEmbeddedObjectPresentationSize>1000</GISScaleForRealEmbeddedObjectPresentationSize>
+					<GISScaleForFixedEmbeddedObjectPresentationSize>1000000000</GISScaleForFixedEmbeddedObjectPresentationSize>
+					<Latitude>0.0</Latitude>
+					<Longitude>0.0</Longitude>
+				</EmbeddedObjectPresentation>
+				<Rectangle>
+					<Id>1544093614578</Id>
+					<Name><![CDATA[rectangle]]></Name>
+					<X>-40</X><Y>20</Y>
+					<Label><X>10</X><Y>10</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<ZHeight>10</ZHeight>
+					<LineWidth>1</LineWidth>
+					<LineColor>-16777216</LineColor>
+					<LineMaterial>null</LineMaterial>
+					<LineStyle>SOLID</LineStyle>
+					<Width>80</Width>
+					<Height>30</Height>
+					<Rotation>0.0</Rotation>
+					<FillColor>-10496</FillColor>
+					<FillMaterial>null</FillMaterial>
+				</Rectangle>
+				<Oval>
+					<Id>1544093638005</Id>
+					<Name><![CDATA[oval]]></Name>
+					<X>-20</X><Y>50</Y>
+					<Label><X>0</X><Y>0</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<ZHeight>10</ZHeight>
+					<LineWidth>1</LineWidth>
+					<LineColor>-16777216</LineColor>
+					<LineMaterial>null</LineMaterial>
+					<LineStyle>SOLID</LineStyle>
+					<RadiusX>10</RadiusX>
+					<RadiusY>40</RadiusY>
+					<Rotation>0.0</Rotation>
+					<FillColor>-16777216</FillColor>
+					<FillMaterial>null</FillMaterial>
+				</Oval>
+				<Oval>
+					<Id>1544093661221</Id>
+					<Name><![CDATA[oval1]]></Name>
+					<X>20</X><Y>50</Y>
+					<Label><X>0</X><Y>0</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<ZHeight>10</ZHeight>
+					<LineWidth>1</LineWidth>
+					<LineColor>-16777216</LineColor>
+					<LineMaterial>null</LineMaterial>
+					<LineStyle>SOLID</LineStyle>
+					<RadiusX>10</RadiusX>
+					<RadiusY>40</RadiusY>
+					<Rotation>0.0</Rotation>
+					<FillColor>-16777216</FillColor>
+					<FillMaterial>null</FillMaterial>
+				</Oval>
+			</Shapes>
+
+				</Group>
+				<Figure3D>
+					<Id>1544094239288</Id>
+					<Name><![CDATA[cone0]]></Name>
+					<X>440</X><Y>360</Y>
+					<Label><X>0</X><Y>-10</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
+					<X>440</X><Y>360</Y><Z>0</Z>
+					<Label><X>0</X><Y>-10</Y></Label>
+					<ResourceReference>
+						<PackageName><![CDATA[cartpolemodel]]></PackageName>
+						<ClassName><![CDATA[3d/cone.dae]]></ClassName>
+					</ResourceReference>
+					<ColorTable>
+						<ColorMapping>
+							<Name><![CDATA[MA_material_27]]></Name>
+							<OriginalColor>-16764597</OriginalColor>
+							<Color>-65536</Color>
+						</ColorMapping>
+					</ColorTable>
+					<AutoScale>true</AutoScale>
+					<Scale>0.25</Scale>
+					<Rotation>0.0</Rotation>
+					<AxisOrder>YZX_AXIS_ORDER</AxisOrder>
+					<ApplyShading>true</ApplyShading>
+					<XCode><![CDATA[550 + main.Displacement_Coef*main.x]]></XCode>
+				</Figure3D>
+				<Figure3D>
+					<Id>1544094291721</Id>
+					<Name><![CDATA[cone1]]></Name>
+					<X>320</X><Y>360</Y>
+					<Label><X>0</X><Y>-10</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
+					<X>320</X><Y>360</Y><Z>0</Z>
+					<Label><X>0</X><Y>-10</Y></Label>
+					<ResourceReference>
+						<PackageName><![CDATA[cartpolemodel]]></PackageName>
+						<ClassName><![CDATA[3d/cone.dae]]></ClassName>
+					</ResourceReference>
+					<ColorTable>
+						<ColorMapping>
+							<Name><![CDATA[MA_material_27]]></Name>
+							<OriginalColor>-16764597</OriginalColor>
+							<Color>-16776961</Color>
+						</ColorMapping>
+					</ColorTable>
+					<AutoScale>true</AutoScale>
+					<Scale>0.25</Scale>
+					<Rotation>180.0</Rotation>
+					<AxisOrder>YZX_AXIS_ORDER</AxisOrder>
+					<ApplyShading>true</ApplyShading>
+					<XCode><![CDATA[430 + main.Displacement_Coef*main.x]]></XCode>
+				</Figure3D>
+			</Shapes>
+
+		</ActiveObjectClass>
+	</ActiveObjectClasses>	
+	<DifferentialEquationsMethod>EULER</DifferentialEquationsMethod>
+	<MixedEquationsMethod>RK45_NEWTON</MixedEquationsMethod>
+	<AlgebraicEquationsMethod>MODIFIED_NEWTON</AlgebraicEquationsMethod>
+	<AbsoluteAccuracy>1.0E-5</AbsoluteAccuracy>
+	<FixedTimeStep>0.001</FixedTimeStep>
+	<RelativeAccuracy>1.0E-5</RelativeAccuracy>
+	<TimeAccuracy>1.0E-5</TimeAccuracy>
+	<Frame>
+		<Width>1000</Width>
+		<Height>300</Height>
+	</Frame>
+	<Database>
+		<Logging>false</Logging>
+		<AutoExport>false</AutoExport>
+		<ShutdownCompact>false</ShutdownCompact>
+		<ImportSettings>
+		</ImportSettings>
+		<ExportSettings>
+		</ExportSettings>
+	</Database>
+	
+	<RunConfiguration ActiveObjectClassId="1544090942410">
+		<Id>1559736888835</Id>
+		<Name><![CDATA[RunConfiguration]]></Name>
+		<MaximumMemory>512</MaximumMemory>
+		<ModelTimeProperties>
+			<StopOption><![CDATA[Stop at specified time]]></StopOption>
+			<InitialDate><![CDATA[1544054400000]]></InitialDate>	
+			<InitialTime><![CDATA[0.0]]></InitialTime>	
+			<FinalDate><![CDATA[1546732800000]]></FinalDate>	
+			<FinalTime><![CDATA[100.0]]></FinalTime>	
+		</ModelTimeProperties>
+		<AnimationProperties>
+			<StopNever>true</StopNever>
+			<ExecutionMode>realTimeScaled</ExecutionMode>
+			<RealTimeScale>1.0</RealTimeScale>
+			<EnableZoomAndPanning>true</EnableZoomAndPanning>
+			<EnableDeveloperPanel>false</EnableDeveloperPanel>
+			<ShowDeveloperPanelOnStart>false</ShowDeveloperPanelOnStart>
+		</AnimationProperties>
+		<Inputs>		
+		</Inputs>
+		<Outputs>
+		</Outputs>
+	</RunConfiguration>
+	<Experiments>	
+		<!--   =========   Simulation Experiment   ========  -->
+		<SimulationExperiment ActiveObjectClassId="1544090942410">
+			<Id>1544090942421</Id>
+			<Name><![CDATA[Simulation]]></Name>
+			<ClientAreaTopLeft><X>0</X><Y>0</Y></ClientAreaTopLeft>
+			<Import><![CDATA[import java.awt.event.ComponentListener;
+import java.awt.event.ComponentEvent;
+import java.io.File;
+import java.io.FileOutputStream;
+import javax.swing.JOptionPane;
+import javax.swing.JButton;
+import javax.swing.ImageIcon;
+import java.awt.Component;
+import javax.swing.JComponent;
+//import jdk.internal.cmm.SystemResourcePressureImpl;
+import ch.qos.logback.classic.pattern.ThreadConverter;
+
+import org.deeplearning4j.rl4j.space.Box;
+import org.deeplearning4j.rl4j.learning.sync.qlearning.QLearning;
+import org.deeplearning4j.rl4j.learning.sync.qlearning.discrete.QLearningDiscreteDense;
+import org.deeplearning4j.rl4j.mdp.MDP;
+import org.deeplearning4j.rl4j.mdp.gym.GymEnv;
+import org.deeplearning4j.rl4j.network.dqn.DQN;
+import org.deeplearning4j.rl4j.policy.DQNPolicy;
+import org.deeplearning4j.rl4j.network.dqn.DQNFactoryStdDense;
+import org.deeplearning4j.rl4j.space.DiscreteSpace;
+import org.nd4j.linalg.learning.config.Adam;
+import org.deeplearning4j.rl4j.util.DataManager;
+
+import java.io.File;
+import java.io.IOException;
+
+
+
+import java.io.PrintWriter;
+import java.io.PrintWriter;
+import lombok.Builder.Default;
+
+
+import lombok.Synchronized;
+import org.datavec.api.transform.analysis.columns.IntegerAnalysis;
+import java.util.logging.Logger;
+]]></Import>
+			<CommandLineArguments><![CDATA[]]></CommandLineArguments>
+			<InitialSetupCode><![CDATA[try{
+	DataManager manager = new DataManager(true);
+	mdp = new SimulationMDP(this);
+	mdp.v_train = true;
+	switch(Constants.DQN_START_CASE){
+		case START_OVER:
+			dql = new FD_QLearningDiscreteDense(mdp, cartPole_Net, cartPole_QL, manager);
+			dql.setSim(this);
+			break;
+		case LOAD_DQN_CONF_AND_START_QL_CONF:
+			DQN myPolicy = DQN.load(Constants.POLICY_FILE);
+			dql = new FD_QLearningDiscreteDense(mdp, myPolicy, cartPole_QL, manager);
+			break;
+		case LOAD_DQN_CONF_QL_CONF:
+			DQNFactoryStdDense mF = new DQNFactoryStdDense(cartPole_Net);
+			DQN loadedPolicy = DQN.load(Constants.POLICY_FILE);
+			DQN myDQN = mF.buildDQN(mdp.getObservationSpace().getShape(), mdp.getActionSpace().getSize());
+			myDQN.copy(loadedPolicy);
+			dql = new FD_QLearningDiscreteDense(mdp, myDQN, cartPole_QL, manager);
+			break;
+		default:
+			break;
+	}	
+
+} catch (IOException e) {
+	e.printStackTrace();
+}
+]]></InitialSetupCode>
+			<MaximumMemory>1024</MaximumMemory>
+			<RandomNumberGenerationType>randomSeed</RandomNumberGenerationType>
+			<CustomGeneratorCode>new Random()</CustomGeneratorCode>
+			<BeforeSimulationRunCode><![CDATA[//getExperimentHost().refresh();
+]]></BeforeSimulationRunCode>
+			<SeedValue>1</SeedValue>
+			<SelectionModeForSimultaneousEvents>FIFO</SelectionModeForSimultaneousEvents>
+			<VmArgs><![CDATA[]]></VmArgs>
+			<LoadRootFromSnapshot>false</LoadRootFromSnapshot>
+			<Variables>
+				<Variable Class="PlainVariable">
+					<Id>1544091799638</Id>
+					<Name><![CDATA[cartPole_QL]]></Name>
+					<X>130</X><Y>330</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
+						<Type><![CDATA[QLearning.QLConfiguration]]></Type>        
+						<InitialValue Class="CodeValue">
+							<Code><![CDATA[new QLearning.QLConfiguration(
+                    123,    //Random seed -> self-explanatory. There are 2 sources of randomness in the present application, one being the e-greedy policy and the other the random initialisation of the state variables whenever reset is called
+                    200,    //Max step By epoch -> this gives the maximum number of steps in an "epoch", i.e. in one round of the "game". In the case of cartpole, an epoch ends when the pole "falls over" (exceeds the threshold for theta), when the cart moves outside of the threshold for x, or when the algorithm has kept the pole upright for 200 steps
+                    150000, 		//Max step --> this is the overall maximum number of steps that can be taken in one round of training consisting of multiple "epochs"
+                    150000, 		//Max size of experience replay --> this is the maximum size of the "experience", i.e. the memory of past results which is stored and used in random batches to update the current network
+                    32,     //size of batches --> this is the size of the batches of experiences (i.e. combinations of prior state, action, posterior state and reward) which are used at each step for updating the current neural network
+                    500,    //target update (hard) --> This is the frequency with which the target network (the one which will hopefully learn the optimal policy) is updated. We are performing a hard update meaning that every 500 steps, the current network is copied to become the new target network
+                    10,     //num step noop warmup --> This is the number of steps at the beginning for which we simply take random actions in order to build up a buffer of experiences
+                    0.01,   //reward scaling --> rewards are scaled by this factor before being fed into the network.
+                    0.99,   //gamma --> this is the discount factor which is applied to expected future rewards in calculating the q-value of a given state
+                    1.0,    //td-error clipping --> Error clipping is used to prevent outliers from having too much weight in updating the network. "Extreme" observations are rescaled using this parameter. 
+                    0.0f,   //min epsilon --> This is the value to which the parameter epsilon will eventually converge over time. It starts off at a higher value to ensure more exploration in initial stages
+                    100000,   //num step for eps greedy anneal --> this sets the speed at which epsilon declines from its initial value to its minimum set above.
+                    true    //double DQN --> We choose whether or not we wish to use the Double DQN algorithm (as opposed to "simple" DQN).
+            );]]></Code>
+						</InitialValue>
+					</Properties>
+				</Variable>
+				<Variable Class="PlainVariable">
+					<Id>1544091863288</Id>
+					<Name><![CDATA[cartPole_Net]]></Name>
+					<X>130</X><Y>350</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
+						<Type><![CDATA[DQNFactoryStdDense.Configuration]]></Type>        
+						<InitialValue Class="CodeValue">
+							<Code><![CDATA[DQNFactoryStdDense.Configuration.builder()
+            .l2(0.001).updater(new Adam(0.0005)).numHiddenNodes(16).numLayer(2).build();]]></Code>
+						</InitialValue>
+					</Properties>
+				</Variable>
+				<Variable Class="PlainVariable">
+					<Id>1544092305341</Id>
+					<Name><![CDATA[mdp]]></Name>
+					<X>60</X><Y>330</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
+						<Type><![CDATA[SimulationMDP]]></Type>        
+					</Properties>
+				</Variable>
+				<Variable Class="PlainVariable">
+					<Id>1544092347175</Id>
+					<Name><![CDATA[dql]]></Name>
+					<X>60</X><Y>350</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
+						<Type><![CDATA[FD_QLearningDiscreteDense<Box>]]></Type>        
+					</Properties>
+				</Variable>
+				<Variable Class="PlainVariable">
+					<Id>1544092394269</Id>
+					<Name><![CDATA[thread]]></Name>
+					<X>60</X><Y>370</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
+						<Type><![CDATA[Thread]]></Type>        
+					</Properties>
+				</Variable>
+			</Variables>
+			<Functions>
+				<Function AccessType="default" StaticFunction="false">
+					<ReturnModificator>VOID</ReturnModificator>
+					<ReturnType><![CDATA[double]]></ReturnType>
+					<Id>1544092685856</Id>
+					<Name><![CDATA[f_takeSnapShot]]></Name>
+					<X>60</X><Y>420</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Parameter>
+						<Name><![CDATA[fileAddress]]></Name>
+						<Type><![CDATA[String]]></Type>
+					</Parameter>
+					<Body><![CDATA[Main m = new Main();
+ModelObservationSpace os = new ModelObservationSpace(m.xThreshold, m.thetaThreshold);
+
+try {
+	PrintWriter writer = new PrintWriter(fileAddress, "UTF-8");
+
+	writer.println("Batch size: " +			dql.getConfiguration().getBatchSize());
+	writer.println("Target Update freq: " +	dql.getConfiguration().getTargetDqnUpdateFreq());
+	writer.println("Warm Up number: " + 	dql.getConfiguration().getUpdateStart());
+	writer.println("Reward factor: " + 		dql.getConfiguration().getRewardFactor());
+	writer.println("Gamma: " + 				dql.getConfiguration().getGamma());
+	writer.println("TD-error clipping: " + 	dql.getConfiguration().getErrorClamp());
+	writer.println("Min epsilon: " +		dql.getConfiguration().getMinEpsilon());
+	writer.println("Eps greedy anneal: " + 	dql.getConfiguration().getEpsilonNbStep());
+	writer.println("Number of nodes: " + 	cartPole_Net.getNumHiddenNodes());
+	writer.println("Number of layers: " + 	cartPole_Net.getNumLayer());
+	writer.println("Learning rate: " + 		cartPole_Net.getUpdater().getLearningRate(0,0));
+	writer.println("Action space: " + 		Constants.ACTION_SPACE_SIZE);
+	writer.println("State space: " + 		Constants.OBSERVATION_SPACE_SIZE);
+
+	writer.close();
+}catch(Exception e){
+	e.printStackTrace();
+}]]></Body>
+				</Function>
+			</Functions>
+
+			<Shapes>
+				<Text>
+					<Id>1544090942422</Id>
+					<Name><![CDATA[text]]></Name>
+					<X>40</X><Y>30</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<Rotation>0.0</Rotation>
+					<Color>-12490271</Color>
+					<Text><![CDATA[CartPoleModel]]></Text>
+					<Font>
+						<Name>SansSerif</Name>
+						<Size>24</Size>
+						<Style>0</Style>
+					</Font>
+					<Alignment>LEFT</Alignment>
+				</Text>
+			</Shapes>
+			<Controls>
+				<Control Type="Button">
+				 	<EmbeddedIcon>false</EmbeddedIcon>				
+					<Id>1544090942423</Id>
+					<Name><![CDATA[button]]></Name>
+					<X>40</X><Y>80</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<BasicProperties Width="100" Height="30">
+                        <EmbeddedIcon>false</EmbeddedIcon>	
+						<TextColor/>
+						<Enabled>true</Enabled>
+						<ActionCode><![CDATA[Thread t1 = new Thread(new Runnable() {
+	@Override
+	public void run() {
+		mdp.v_present = true;
+		dql.train();
+		try{
+			traceln("Training finished");
+			stop();
+			DQNPolicy<Box> pol = dql.getPolicy();
+			pol.save(Constants.POLICY_FILE);
+			f_takeSnapShot(Constants.SNAPSHIOT_FILE);
+		}catch (IOException e){
+			e.printStackTrace();
+		}
+	
+	}
+});
+thread = t1;
+mdp.set_thread(t1);
+t1.start();]]></ActionCode>
+					</BasicProperties>
+					<ExtendedProperties>
+						<Font Name="Dialog" Size="11" Style="0"/>
+						<LabelText><![CDATA["Train"]]></LabelText>
+					</ExtendedProperties>
+				</Control>
+				<Control Type="Button">
+				 	<EmbeddedIcon>false</EmbeddedIcon>				
+					<Id>1544091656722</Id>
+					<Name><![CDATA[button1]]></Name>
+					<X>40</X><Y>160</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<BasicProperties Width="100" Height="30">
+                        <EmbeddedIcon>false</EmbeddedIcon>	
+						<TextColor/>
+						<Enabled>true</Enabled>
+						<ActionCode><![CDATA[Thread t1 = new Thread(new Runnable() {
+	@Override
+	public void run() {
+	try{
+		DQNPolicy<ObservationEnc> myPolicy = DQNPolicy.load(Constants.POLICY_FILE);
+		int ntest = 100;  // the number of epoch runs
+		double rewards = 0;
+		mdp.v_train = false;
+		mdp.v_present = true;
+		for (int i=0; i < ntest; i++){
+			double reward = myPolicy.play(mdp);
+			rewards += reward;
+			traceln("The epoch reward is: " + reward);
+		}
+		traceln("Average reward is: " + rewards/ntest);		
+		//model run with trained policy
+	}catch (IOException e){
+		e.printStackTrace();
+	}
+	}
+});
+
+thread = t1;
+mdp.set_thread(t1);
+t1.start();	
+
+getExperimentHost().setPresentable( getEngine().getRoot());
+//getExperimentHost().refresh();	]]></ActionCode>
+					</BasicProperties>
+					<ExtendedProperties>
+						<Font Name="Dialog" Size="11" Style="0"/>
+						<LabelText><![CDATA["Play"]]></LabelText>
+					</ExtendedProperties>
+				</Control>
+				<Control Type="Button">
+				 	<EmbeddedIcon>false</EmbeddedIcon>				
+					<Id>1544091703288</Id>
+					<Name><![CDATA[button2]]></Name>
+					<X>40</X><Y>120</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<BasicProperties Width="100" Height="30">
+                        <EmbeddedIcon>false</EmbeddedIcon>	
+						<TextColor/>
+						<Enabled>true</Enabled>
+						<ActionCode><![CDATA[try{
+	DQNPolicy<Box> pol = dql.getPolicy();
+	f_takeSnapShot(Constants.SNAPSHIOT_FILE);
+	pol.save(Constants.POLICY_FILE);
+}catch (IOException e){
+	e.printStackTrace();
+}]]></ActionCode>
+					</BasicProperties>
+					<ExtendedProperties>
+						<Font Name="Dialog" Size="11" Style="0"/>
+						<LabelText><![CDATA["SavePolicy"]]></LabelText>
+					</ExtendedProperties>
+				</Control>
+			</Controls>
+
+			<Parameters>			
+				<Parameter>
+					<ParameterName><![CDATA[p_experiment]]></ParameterName>
+					<ParameterValue Class="CodeValue">
+						<Code><![CDATA[mdp]]></Code>
+					</ParameterValue>
+				</Parameter>
+			</Parameters>			
+			<PresentationProperties>
+				<EnableZoomAndPanning>true</EnableZoomAndPanning>
+				<ExecutionMode><![CDATA[realTimeScaled]]></ExecutionMode>
+				<Title><![CDATA[CartPoleModel : Simulation]]></Title>	
+				<EnableDeveloperPanel>true</EnableDeveloperPanel>
+				<ShowDeveloperPanelOnStart>false</ShowDeveloperPanelOnStart>
+				<RealTimeScale>1.0</RealTimeScale>
+			</PresentationProperties>
+			<ModelTimeProperties>
+				<StopOption><![CDATA[Never]]></StopOption>
+				<InitialDate><![CDATA[1544054400000]]></InitialDate>	
+				<InitialTime><![CDATA[0.0]]></InitialTime>	
+				<FinalDate><![CDATA[1546732800000]]></FinalDate>	
+				<FinalTime><![CDATA[100.0]]></FinalTime>	
+			</ModelTimeProperties>
+		</SimulationExperiment>	
+	</Experiments>
+	<JavaClasses>
+		<!--   =========   Java Class   ========  -->
+		<JavaClass>
+			<Id>1544091262620</Id>
+			<Name><![CDATA[SimulationMDP]]></Name>
+			<Text><![CDATA[import org.deeplearning4j.rl4j.space.ObservationSpace;
+import org.json.JSONObject;
+import org.deeplearning4j.gym.StepReply;
+import org.deeplearning4j.rl4j.mdp.MDP;
+import org.deeplearning4j.rl4j.space.ActionSpace;
+import org.deeplearning4j.rl4j.space.DiscreteSpace;
+/**
+ * SimulationMDP
+ */	
+
+public class SimulationMDP <O, A, AS extends ActionSpace<A>> implements Serializable, MDP <O, A, AS> {
+
+   
+	public boolean v_train = true;
+	public boolean v_present = false;
+	public int v_iterationEpoch = 0;
+	public int v_epoch = 0;
+	public Main v_main;
+	public Simulation sim;
+	public Engine engine;
+	public Thread thread;
+	public double simTimeInitial = System.currentTimeMillis() * 0.001 / 60 ; // in minutes
+
+	
+	 /**
+     * Default constructor
+     */
+	public  SimulationMDP() {
+			
+	}
+	
+	public  SimulationMDP(Simulation sim) {
+		this.sim = sim;
+		this.engine = sim.getEngine();
+		v_main = sim.createRoot(this.engine);
+	}
+		
+	public void set_thread(Thread thread) {
+		this.thread = thread;
+	}
+	
+	public ObservationSpace<O> getObservationSpace() { 
+		//traceln("----getObservation Called----");
+		ModelObservationSpace os = new ModelObservationSpace(this.v_main.xThreshold, this.v_main.thetaThreshold);
+		return os; 
+	 }
+	
+	public AS getActionSpace() { 
+		ActionSpace as = new DiscreteSpace(Constants.ACTION_SPACE_SIZE);
+		return (AS) as; 
+	}
+
+	public synchronized StepReply step(Object action) { 
+		//traceln("----Step Called----");
+		
+		//-----Action comunicated to Main-----
+		this.v_main.v_action = (int) action;
+		
+		//-----Run Anylogic with the comunicated action-----
+		if(v_train){
+			v_main.create_e_myDynamicEvent(0.00001, TimeUnits.SECOND);  // Timeout is a small value to just mimic a physical time pass
+		}else{
+			v_main.create_e_myDynamicEvent(0.1, TimeUnits.SECOND);  // Timeout is a small value to just mimic a physical time pass
+		}
+		engine.run();	
+		
+		//-----Wait RL4j-----
+		synchronized(this) { 
+			try{
+				this.wait();
+			}catch(InterruptedException e) {}
+		}
+		
+		//-----Observation-----
+		ObservationEnc myObservation = this.v_main.v_physicalStep;
+			
+		//-----Reward-----
+		double reward = 1.;
+
+		//-----info-----
+		//-----It is not necessary for the current project
+		JSONObject info = new JSONObject("{}");
+		  
+		this.v_iterationEpoch += 1;
+
+		//traceln("----stepReply Called----");
+		StepReply myStepReply = new StepReply(myObservation, reward, this.isDone(), info);
+		
+		return myStepReply; 
+	
+	}
+
+	public boolean isDone(  ) { 
+		if(abs(this.v_main.x) > this.v_main.xThreshold || abs(this.v_main.theta) > this.v_main.thetaThreshold || this.v_iterationEpoch > this.v_main.MaxStep-1){
+			return true;
+		}else{
+			return false;
+		}
+	}
+
+	
+	public synchronized O reset() {
+	  if(v_epoch > 0) {
+		 close();	
+	  }
+	  this.v_epoch += 1;
+	  this.v_iterationEpoch = 0;
+	  	  
+	  v_main = resetMain(engine);
+	  traceln("ENTERING epoch #" + v_epoch + "- and the Engine state is "+ engine.getState());	
+		  
+	  
+	  ObservationEnc oe = new ObservationEnc(this.v_main.x, this.v_main.theta, this.v_main.xDot, this.v_main.thetaDot);
+	  return (O) oe; 
+	}
+	
+	
+	
+	public void close() { 
+		engine.pause();
+		engine.finish();		
+		engine.stop();
+		traceln("CLOSING epoch #" + v_epoch + "- and the Engine state is "+ engine.getState());
+	}
+	
+	public Main resetMain(Engine engine) {
+		Main main = new Main(engine, null, null);
+		engine.start(main);
+		main.p_experiment = this;
+		if(v_present){
+			main.getEngine().getExperimentHost().setPresentable( main.getEngine().getRoot());
+		}
+		return main;
+	}
+	
+	public MDP<O, A, AS> newInstance(  ) {
+		traceln("!!!!----newInstance method must be modified----!!!!");
+		SimulationMDP newSim = this;
+	  return newSim; 
+	}
+
+	
+	
+	@Override
+	public String toString() {
+		return super.toString();
+	}
+
+}]]></Text>
+		</JavaClass>
+		<!--   =========   Java Class   ========  -->
+		<JavaClass>
+			<Id>1544091307887</Id>
+			<Name><![CDATA[FD_QLearningDiscrete]]></Name>
+			<Text><![CDATA[import org.nd4j.linalg.api.ndarray.INDArray;
+import org.deeplearning4j.rl4j.learning.sync.Transition;
+import org.nd4j.linalg.factory.Nd4j;
+import org.nd4j.linalg.indexing.INDArrayIndex;
+import org.nd4j.linalg.indexing.NDArrayIndex;
+import org.deeplearning4j.rl4j.mdp.MDP;
+import org.deeplearning4j.rl4j.network.dqn.IDQN;
+import org.deeplearning4j.rl4j.learning.sync.qlearning.QLearning.QLConfiguration;
+import org.deeplearning4j.rl4j.util.DataManager;
+import org.deeplearning4j.rl4j.space.DiscreteSpace;
+import org.deeplearning4j.rl4j.space.Encodable;
+import org.deeplearning4j.rl4j.learning.sync.qlearning.discrete.QLearningDiscrete;
+import org.nd4j.linalg.primitives.Pair;
+import org.opencv.ximgproc.SuperpixelLSC;
+
+
+/**
+ * MyClass
+ */	
+public class FD_QLearningDiscrete<O extends Encodable> extends QLearningDiscrete<O>{
+	
+	private double maxSeenQ;
+	private double minSeenQ;
+	private Simulation sim;
+	
+	public FD_QLearningDiscrete(MDP<O, Integer, DiscreteSpace> mdp, IDQN dqn, QLConfiguration conf,DataManager dataManager, int epsilonNbStep) {
+		super(mdp,dqn,conf,dataManager,epsilonNbStep);
+	}
+	
+	
+	@Override
+	protected Pair setTarget(ArrayList<Transition<Integer>> transitions) {
+		if (transitions.size() == 0)
+            throw new IllegalArgumentException("too few transitions");
+
+        int size = transitions.size();
+
+        int[] shape = getHistoryProcessor() == null ? getMdp().getObservationSpace().getShape()
+                        : getHistoryProcessor().getConf().getShape();
+        int[] nshape = makeShape(size, shape);
+        INDArray obs = Nd4j.create(nshape);
+        INDArray nextObs = Nd4j.create(nshape);
+        int[] actions = new int[size];
+        boolean[] areTerminal = new boolean[size];
+
+        for (int i = 0; i < size; i++) {
+            Transition<Integer> trans = transitions.get(i);
+            areTerminal[i] = trans.isTerminal();
+            actions[i] = trans.getAction();
+
+            INDArray[] obsArray = trans.getObservation();
+            if (obs.rank() == 2) {
+                obs.putRow(i, obsArray[0]);
+            } else {
+                for (int j = 0; j < obsArray.length; j++) {
+                    obs.put(new INDArrayIndex[] {NDArrayIndex.point(i), NDArrayIndex.point(j)}, obsArray[j]);
+                }
+            }
+
+            INDArray[] nextObsArray = Transition.append(trans.getObservation(), trans.getNextObservation());
+            if (nextObs.rank() == 2) {
+                nextObs.putRow(i, nextObsArray[0]);
+            } else {
+                for (int j = 0; j < nextObsArray.length; j++) {
+                    nextObs.put(new INDArrayIndex[] {NDArrayIndex.point(i), NDArrayIndex.point(j)}, nextObsArray[j]);
+                }
+            }
+        }
+        if (getHistoryProcessor() != null) {
+            obs.muli(1.0 / getHistoryProcessor().getScale());
+            nextObs.muli(1.0 / getHistoryProcessor().getScale());
+        }
+
+        INDArray dqnOutputAr = dqnOutput(obs);
+
+        INDArray dqnOutputNext = dqnOutput(nextObs);
+        INDArray targetDqnOutputNext = null;
+
+        INDArray tempQ = null;
+        INDArray getMaxAction = null;
+        if (getConfiguration().isDoubleDQN()) {
+            targetDqnOutputNext = targetDqnOutput(nextObs);
+            getMaxAction = Nd4j.argMax(dqnOutputNext, 1);
+        } else {
+            tempQ = Nd4j.max(dqnOutputNext, 1);
+        }
+
+
+        for (int i = 0; i < size; i++) {
+            double yTar = transitions.get(i).getReward();
+            if (!areTerminal[i]) {
+                double q = 0;
+                if (getConfiguration().isDoubleDQN()) {
+                    q += targetDqnOutputNext.getDouble(i, getMaxAction.getInt(i));
+                } else
+                    q += tempQ.getDouble(i);
+
+                yTar += getConfiguration().getGamma() * q;
+
+            }
+
+
+
+            double previousV = dqnOutputAr.getDouble(i, actions[i]);
+            double lowB = previousV - getConfiguration().getErrorClamp();
+            double highB = previousV + getConfiguration().getErrorClamp();
+            double clamped = Math.min(highB, Math.max(yTar, lowB));
+
+            dqnOutputAr.putScalar(i, actions[i], clamped);
+            /*
+            //if(getConfiguration().getUpdateStart() < this.learning.getStepCounter())
+            this.maxSeenQ = max(this.maxSeenQ,yTar);
+            this.minSeenQ = min(this.minSeenQ,yTar);
+            this.sim.aveQ = (this.sim.aveQCounter * this.sim.aveQ + yTar) / (this.sim.aveQCounter + 1);
+            this.sim.aveQCounter += 1;
+            */
+        }
+
+        return new Pair(obs, dqnOutputAr);
+	}
+	
+	public double getMaxQ(){
+		return maxSeenQ;
+	}
+	public void resetMaxQ(){
+		this.maxSeenQ = 0;
+	}
+	public double getMinQ(){
+		return minSeenQ;
+	}
+	public void resetMinQ(){
+		this.minSeenQ = 0;
+	}
+	public void setSim(Simulation sim){
+		this.sim = sim;
+	}
+}]]></Text>
+		</JavaClass>
+		<!--   =========   Java Class   ========  -->
+		<JavaClass>
+			<Id>1544091345530</Id>
+			<Name><![CDATA[FD_QLearningDiscreteDense]]></Name>
+			<Text><![CDATA[import org.deeplearning4j.rl4j.mdp.MDP;
+import org.deeplearning4j.rl4j.space.DiscreteSpace;
+import org.deeplearning4j.rl4j.network.dqn.IDQN;
+import org.deeplearning4j.rl4j.learning.sync.qlearning.QLearning;
+import org.deeplearning4j.rl4j.util.DataManager;
+import org.deeplearning4j.rl4j.space.Encodable;
+import org.deeplearning4j.rl4j.network.dqn.DQNFactoryStdDense;
+import org.deeplearning4j.rl4j.network.dqn.DQNFactory;
+
+/**
+ * MyClass1
+ */	
+public class FD_QLearningDiscreteDense<O extends Encodable> extends FD_QLearningDiscrete<O>{
+	
+	public FD_QLearningDiscreteDense(MDP<O, Integer, DiscreteSpace> mdp, IDQN dqn, QLearning.QLConfiguration conf, DataManager dataManager) {
+		super(mdp, dqn, conf, dataManager, conf.getEpsilonNbStep());
+	}
+	
+	public FD_QLearningDiscreteDense(MDP<O, Integer, DiscreteSpace> mdp, DQNFactory factory, QLearning.QLConfiguration conf, DataManager dataManager) {
+		this(mdp, factory.buildDQN(mdp.getObservationSpace().getShape(), mdp.getActionSpace().getSize()), conf, dataManager);
+	}
+	
+	public FD_QLearningDiscreteDense(MDP<O, Integer, DiscreteSpace> mdp, DQNFactoryStdDense.Configuration netConf, QLearning.QLConfiguration conf, DataManager dataManager) {
+		this(mdp, new DQNFactoryStdDense(netConf), conf, dataManager);
+	}
+	
+}]]></Text>
+		</JavaClass>
+		<!--   =========   Java Class   ========  -->
+		<JavaClass>
+			<Id>1544091383620</Id>
+			<Name><![CDATA[ModelObservationSpace]]></Name>
+			<Text><![CDATA[import org.nd4j.linalg.api.ndarray.INDArray;
+import org.nd4j.linalg.factory.Nd4j;
+import org.deeplearning4j.rl4j.space.ObservationSpace;
+
+
+public class ModelObservationSpace implements Serializable, ObservationSpace {
+	
+	String name;
+	int[] shape;
+    INDArray low;
+    INDArray high;
+    
+    int nOfStates;
+    
+    public ModelObservationSpace(double xThreshold, double thetaThreshold) {
+    	this.name = "Box";
+    	int[] shape = {Constants.OBSERVATION_SPACE_SIZE};  
+    	this.shape = shape;
+    	this.low = Nd4j.create(shape);
+    	this.high = Nd4j.create(shape);
+    	this.low.putScalar(0, -2*xThreshold);
+    	this.low.putScalar(1, Double.NEGATIVE_INFINITY);
+    	this.low.putScalar(2, -2*thetaThreshold);
+    	this.low.putScalar(3, Double.NEGATIVE_INFINITY);
+    	this.high.putScalar(0, 2*xThreshold);
+    	this.high.putScalar(1, Double.POSITIVE_INFINITY);
+    	this.high.putScalar(2, 2*thetaThreshold);
+    	this.high.putScalar(3, Double.POSITIVE_INFINITY);
+    }
+    
+
+    
+    public String getName() {
+    	return name;
+    };
+
+    public int[] getShape() {
+    	return shape;
+    };
+
+    public INDArray getLow() {
+    	return low;
+    };
+
+    public INDArray getHigh() {
+    	return high;
+    };
+    public int getnOfStates(){
+    	return nOfStates;
+    }
+
+    
+
+	/**
+	 * This number is here for model snapshot storing purpose<br>
+	 * It needs to be changed when this class gets changed
+	 */ 
+	private static final long serialVersionUID = 1L;
+
+}]]></Text>
+		</JavaClass>
+		<!--   =========   Java Class   ========  -->
+		<JavaClass>
+			<Id>1544091414554</Id>
+			<Name><![CDATA[ObservationEnc]]></Name>
+			<Text><![CDATA[import org.deeplearning4j.rl4j.space.Encodable;
+
+public class ObservationEnc implements Serializable, Encodable {	
+	
+	private double x;
+	private double xDot;
+	private double theta;
+	private double thetaDot;
+	
+    public ObservationEnc(double x, double xDot, double theta, double thetaDot) {
+    	this.x = x;
+    	this.xDot = xDot;
+    	this.theta = theta;
+    	this.thetaDot = thetaDot;
+    }
+    
+    public double[] toArray() {
+    	double[] tA = new double[]{this.x, this.xDot, this.theta, this.thetaDot};
+    	return tA;
+    }
+    
+/*	@Override
+	public String toString() {
+		return super.toString();
+	}
+	*/
+}]]></Text>
+		</JavaClass>
+		<!--   =========   Java Class   ========  -->
+		<JavaClass>
+			<Id>1544111051864</Id>
+			<Name><![CDATA[Constants]]></Name>
+			<Text><![CDATA[/**
+ * Constants
+ */	
+public class Constants {
+	
+	public static final String POLICY_FILE = "results/policy";
+	public static final String SNAPSHIOT_FILE = "results/Snapshot.txt";
+	public static final DQL_START DQN_START_CASE = DQL_START.START_OVER;
+	
+	public static final int OBSERVATION_SPACE_SIZE = 4;
+	public static final int ACTION_SPACE_SIZE = 2;
+
+	public enum DQL_START{
+		START_OVER,
+		LOAD_DQN_CONF_AND_START_QL_CONF,
+		LOAD_DQN_CONF_QL_CONF
+    };	
+
+}]]></Text>
+		</JavaClass>
+	</JavaClasses>
+	<ModelResources>
+		<Resource>
+			<Path><![CDATA[rl4j-1.0.0-beta.jar]]></Path>
+			<ReferencedFromUserCode>false</ReferencedFromUserCode>
+		</Resource>
+		<Resource>
+			<Path><![CDATA[3d/cone.dae]]></Path>
+			<ReferencedFromUserCode>false</ReferencedFromUserCode>
+		</Resource>
+	</ModelResources>
+	<ClassPathEntry>
+		<ResourceReference>
+			<PackageName><![CDATA[cartpolemodel]]></PackageName>
+			<ClassName><![CDATA[rl4j-1.0.0-beta.jar]]></ClassName>
+		</ResourceReference>
+		<Imported>true</Imported>
+		<Folder>false</Folder>
+	</ClassPathEntry>
+</Model>
+</AnyLogicWorkspace>

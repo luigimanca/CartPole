@@ -1,0 +1,13 @@
+Batch size: 32
+Target Update freq: 500
+Warm Up number: 10
+Reward factor: 0.01
+Gamma: 0.99
+TD-error clipping: 1.0
+Min epsilon: 0.0
+Eps greedy anneal: 100000
+Number of nodes: 16
+Number of layers: 2
+Learning rate: 5.0E-4
+Action space: 2
+State space: 4
